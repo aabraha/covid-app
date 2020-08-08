@@ -15,7 +15,7 @@ public class Consumer {
 	@Autowired
 	ConsumedModelRepository consumedModelRepository;
 		
-	@RequestMapping("/data")
+	@RequestMapping("/cases")
 	public List<ConsumedModel> getData(){
 		
 		return consumedModelRepository.findAll();
