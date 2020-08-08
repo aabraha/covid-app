@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 
 public class ConsumedModel {
-	private DataObject dataObj;
+	private DataObject data;
+
 	
 }
