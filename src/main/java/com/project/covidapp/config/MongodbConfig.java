@@ -36,7 +36,7 @@ public class MongodbConfig {
 					RestTemplate restTemplate) {
 		
 			//String url = "https://www.cdc.gov/coronavirus/2019-ncov/cases-updates/new_cases_by_day.json";
-			String url = "http://cov19.cc/report.json";
+			String url = "https://cov19.cc/report.json";
 			return strings->{
 
 				WorldCase dto = restTemplate.getForObject(url, WorldCase.class);
