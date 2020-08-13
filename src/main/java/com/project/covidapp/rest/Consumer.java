@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.covidapp.dto.ConsumedModel;
+import com.project.covidapp.dto.WorldCase;
 import com.project.covidapp.repository.ConsumedModelRepository;
 
 @RestController
@@ -16,7 +16,7 @@ public class Consumer {
 	ConsumedModelRepository consumedModelRepository;
 		
 	@RequestMapping("/cases")
-	public List<ConsumedModel> getData(){
+	public List<WorldCase> getData(){
 		
 		return consumedModelRepository.findAll();
 	}
