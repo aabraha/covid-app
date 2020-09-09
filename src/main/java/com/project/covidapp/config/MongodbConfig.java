@@ -25,24 +25,34 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.covidapp.dto.WorldCase;
+import com.project.covidapp.model.USCase;
+import com.project.covidapp.repository.USCaseRepository;
 import com.project.covidapp.repository.ConsumedModelRepository;
 
-@EnableMongoRepositories(basePackageClasses = ConsumedModelRepository.class)
+@EnableMongoRepositories(basePackageClasses = USCaseRepository.class)
 @Configuration
 public class MongodbConfig {
 	@Bean
 		CommandLineRunner commonadLineRunner(
 					ConsumedModelRepository consumedModelRepository,
+					USCaseRepository usCaseRepository,
 					RestTemplate restTemplate) {
 		
-			//String url = "https://www.cdc.gov/coronavirus/2019-ncov/cases-updates/new_cases_by_day.json";
 			String url = "https://cov19.cc/report.json";
 			return strings->{
 
 				WorldCase dto = restTemplate.getForObject(url, WorldCase.class);
+				USCase theCase = new USCase();
+				theCase.setLast_updated(dto.getLast_updated());
+				theCase.setStates(dto.getRegions().getUnitedstates().getList());
+				
+				System.err.println(theCase);
 				System.err.println("hello:" + url);
-
-				consumedModelRepository.save(dto);
+				System.err.println(dto.getRegions().getUnitedstates().getList());
+				//check last_updated is already inserted
+				
+				usCaseRepository.insert(theCase);
+				//consumedModelRepository.save(dto);
 
 			};
 		}
