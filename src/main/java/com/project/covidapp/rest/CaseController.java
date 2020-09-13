@@ -1,5 +1,6 @@
 package com.project.covidapp.rest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,40 +9,41 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.covidapp.dto.WorldCase;
 import com.project.covidapp.model.USCase;
-import com.project.covidapp.repository.ConsumedModelRepository;
-import com.project.covidapp.repository.USCaseRepository;
+import com.project.covidapp.service.CaseService;
 
 @RestController
 @RequestMapping("/api")
 public class CaseController {
 	@Autowired
-	ConsumedModelRepository consumedModelRepository;
-	
-	@Autowired
-	USCaseRepository usCaseRepository;
-		
+	private CaseService caseService;
+			
 	@GetMapping("/cases")
-	public List<USCase> getData(){
+	public List<USCase> getAllCases(){
 		
-		return usCaseRepository.findAll();
+		return caseService.getAllCases();
 	}
 	
 	@GetMapping("/cases/{id}")
-	public Optional<WorldCase> getById(@PathVariable int id) {
+	public Optional<USCase> getCaseById(@PathVariable String id) {
 		
-		return consumedModelRepository.findById(id);
+		return caseService.getCaseById(id);
+	}
+	
+	@GetMapping("/cases/{dateModified}")
+	public List<USCase> getCasesByDateModefied(@PathVariable Date dateModified){
+		
+		return caseService.getCasesByDateModified(dateModified);
 	}
 	
 	@DeleteMapping("/cases/{id}")
-	public String delete(@PathVariable String id) {
+	public String deleteCaseById(@PathVariable String id) {
 		
-		usCaseRepository.deleteById(id);
+		caseService.deleteCaseById(id);
 		return "deleted entry with id: " + id;
 	}
+	
 
 }

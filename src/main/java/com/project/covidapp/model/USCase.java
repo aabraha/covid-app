@@ -27,7 +27,7 @@ public class USCase {
 	private String id;
 	
 	@Indexed(unique = true)
-	private Date last_updated;
+	private Date lastUpdated;
 	
 	private List<State> states;
 

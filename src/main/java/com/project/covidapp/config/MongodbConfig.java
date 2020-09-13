@@ -1,64 +1,62 @@
 package com.project.covidapp.config;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.security.cert.X509Certificate;
-
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.covidapp.dto.WorldCase;
 import com.project.covidapp.model.USCase;
-import com.project.covidapp.repository.USCaseRepository;
 import com.project.covidapp.repository.ConsumedModelRepository;
+import com.project.covidapp.repository.USCaseRepository;
 
 @EnableMongoRepositories(basePackageClasses = USCaseRepository.class)
 @Configuration
 public class MongodbConfig {
+	
+	@Autowired
+	USCaseRepository usCaseRepository;
+	@Autowired
+	RestTemplate restTemplate;
+	private String url = "https://cov19.cc/report.json";
+	private WorldCase dto;
+	private USCase usCase = new USCase();
+	//@Value("${fetchFrequencyInMins}")
+	//private String fetchFreqMins;
+	//private int calFetchFreqMili = Integer.parseInt(fetchFreqMins) * 60 * 1000;
+	////private String value = String.valueOf(calFetchFreqMili);
+	
 	@Bean
-		CommandLineRunner commonadLineRunner(
-					ConsumedModelRepository consumedModelRepository,
-					USCaseRepository usCaseRepository,
-					RestTemplate restTemplate) {
+	CommandLineRunner commonadLineRunner() {
+	
 		
-			String url = "https://cov19.cc/report.json";
-			return strings->{
+		return strings->{
 
-				WorldCase dto = restTemplate.getForObject(url, WorldCase.class);
-				USCase theCase = new USCase();
-				theCase.setLast_updated(dto.getLast_updated());
-				theCase.setStates(dto.getRegions().getUnitedstates().getList());
-				
-				System.err.println(theCase);
-				System.err.println("hello:" + url);
-				System.err.println(dto.getRegions().getUnitedstates().getList());
-				//check last_updated is already inserted
-				
-				usCaseRepository.insert(theCase);
-				//consumedModelRepository.save(dto);
-
-			};
-		}
+			 dto = restTemplate.getForObject(url, WorldCase.class);
+			
+			usCase.setLastUpdated(dto.getLast_updated());
+			usCase.setStates(dto.getRegions().getUnitedstates().getList());
+			
+			System.err.println(usCase);
+			System.err.println("source location:" + url);
+			System.err.println(dto.getRegions().getUnitedstates().getList());
+			
+			usCaseRepository.insert(usCase);
+		};
+	}
 	
-	
+	@Scheduled(fixedRateString="${fetchFrequencyInMins}" )
+	public void publish() {
+		System.out.println("scheduled running");
+		dto = restTemplate.getForObject(url, WorldCase.class);
+		usCase.setLastUpdated(dto.getLast_updated());
+		usCase.setStates(dto.getRegions().getUnitedstates().getList());
+		System.out.println("before mongo insert");
+		usCaseRepository.save(usCase);
 
-
-
+	}
 }
