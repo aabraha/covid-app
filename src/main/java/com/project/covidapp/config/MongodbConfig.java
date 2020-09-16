@@ -13,6 +13,7 @@ import com.project.covidapp.dto.WorldCase;
 import com.project.covidapp.model.USCase;
 import com.project.covidapp.repository.ConsumedModelRepository;
 import com.project.covidapp.repository.USCaseRepository;
+import com.project.covidapp.service.ZonedDateTimeWriteConverter;
 
 @EnableMongoRepositories(basePackageClasses = USCaseRepository.class)
 @Configuration
@@ -25,11 +26,9 @@ public class MongodbConfig {
 	private String url = "https://cov19.cc/report.json";
 	private WorldCase dto;
 	private USCase usCase = new USCase();
-	//@Value("${fetchFrequencyInMins}")
-	//private String fetchFreqMins;
-	//private int calFetchFreqMili = Integer.parseInt(fetchFreqMins) * 60 * 1000;
-	////private String value = String.valueOf(calFetchFreqMili);
-	
+	@Autowired
+	private ZonedDateTimeWriteConverter dateObj;
+		
 	@Bean
 	CommandLineRunner commonadLineRunner() {
 	
@@ -37,25 +36,20 @@ public class MongodbConfig {
 		return strings->{
 
 			 dto = restTemplate.getForObject(url, WorldCase.class);
-			
-			usCase.setLastUpdated(dto.getLast_updated());
+			usCase.setLastUpdated(dateObj.convert(dto.getLast_updated()));
 			usCase.setStates(dto.getRegions().getUnitedstates().getList());
-			
-			System.err.println(usCase);
-			System.err.println("source location:" + url);
-			System.err.println(dto.getRegions().getUnitedstates().getList());
-			
-			usCaseRepository.insert(usCase);
+				
+			//usCaseRepository.insert(usCase);
 		};
 	}
 	
-	@Scheduled(fixedRateString="${fetchFrequencyInMins}" )
+	@Scheduled(fixedRateString="${fetchFrequencyInMili}" )
 	public void publish() {
-		System.out.println("scheduled running");
+		//System.out.println("scheduled running");
 		dto = restTemplate.getForObject(url, WorldCase.class);
-		usCase.setLastUpdated(dto.getLast_updated());
+		usCase.setLastUpdated(dateObj.convert(dto.getLast_updated()));
 		usCase.setStates(dto.getRegions().getUnitedstates().getList());
-		System.out.println("before mongo insert");
+		//System.out.println("before mongo insert");
 		usCaseRepository.save(usCase);
 
 	}

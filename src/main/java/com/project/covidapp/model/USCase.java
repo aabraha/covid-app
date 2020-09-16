@@ -3,7 +3,6 @@ package com.project.covidapp.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Generated;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

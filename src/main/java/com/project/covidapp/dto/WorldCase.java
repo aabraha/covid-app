@@ -1,5 +1,6 @@
 package com.project.covidapp.dto;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,6 @@ import lombok.ToString;
 @ToString
 public class WorldCase {
 
-	private Date last_updated;
+	private ZonedDateTime last_updated;
 	private Category regions;
 }

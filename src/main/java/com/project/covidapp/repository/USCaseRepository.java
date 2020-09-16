@@ -11,6 +11,14 @@ import com.project.covidapp.model.USCase;
 @Repository
 public interface USCaseRepository extends MongoRepository<USCase, String> {
 
-	List<USCase> findByLastUpdated(Date dateModified);
+	List<USCase> findByLastUpdated(Date date);
+
+	List<USCase> findByLastUpdatedGreaterThan(Date date);
+
+	List<USCase> findByLastUpdatedLessThan(Date date);
+
+	List<USCase> findByLastUpdatedBetween(Date from, Date to);
+
+	List<USCase> findByStatesState(String state);
 
 }
