@@ -78,10 +78,11 @@ public class CaseController {
 	
 	 // Search by state name
 	 @GetMapping(value="/cases/search", params= {"state"})
-	 public List<State> getCasesByState(@RequestParam("state") String state){
+	 public List<USCase> getCasesByState(@RequestParam("state") String state){
 		 
 		 return caseService.getCasesByState(state);
 	 }
+	 
 	@DeleteMapping("/cases/{id}")
 	public String deleteCaseById(@PathVariable String id) {
 		
