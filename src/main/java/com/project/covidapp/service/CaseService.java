@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.project.covidapp.dto.State;
 import com.project.covidapp.model.USCase;
 import com.project.covidapp.repository.USCaseRepository;
+import com.project.covidapp.rest.USCaseNotFoundException;
 
 @Service
 public class CaseService {
@@ -36,13 +37,21 @@ public class CaseService {
 	public List<USCase> getAllCases() {
 		List<USCase> lists = new ArrayList<>();
 		lists = usCaseRepository.findAll();
-		System.err.println("retrieved date format: " + lists.get(0).getLastUpdated());
-		return usCaseRepository.findAll();
+		if(lists.size() == 0) {
+			throw new USCaseNotFoundException("There is no any record found");
+		}
+
+		return lists;
 	}
 
 	public Optional<USCase> getCaseById(String id) {
 
-		return usCaseRepository.findById(id);
+		Optional<USCase> theCase = usCaseRepository.findById(id);
+		if(!theCase.isPresent()) {
+			throw new USCaseNotFoundException("There is no case with ID: " + id);
+		}
+		
+		return theCase;
 	}
 
 	public void deleteCaseById(String id) {

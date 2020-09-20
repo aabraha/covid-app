@@ -23,11 +23,13 @@ public class MongodbConfig {
 	USCaseRepository usCaseRepository;
 	@Autowired
 	RestTemplate restTemplate;
+	@Autowired
+	private ZonedDateTimeWriteConverter dateObj;
+	
 	private String url = "https://cov19.cc/report.json";
 	private WorldCase dto;
 	private USCase usCase = new USCase();
-	@Autowired
-	private ZonedDateTimeWriteConverter dateObj;
+	
 		
 	@Bean
 	CommandLineRunner commonadLineRunner() {
