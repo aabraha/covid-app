@@ -11,7 +11,8 @@ import com.project.covidapp.model.USCaseErrorResponse;
 public class USCaseRestExceptionHandler {
 
 	@ExceptionHandler
-	public ResponseEntity<USCaseErrorResponse> exceptionHandle(USCaseNotFoundException exc){
+	public ResponseEntity<USCaseErrorResponse> exceptionHandle(
+			USCaseNotFoundException exc){
 		
 		USCaseErrorResponse error = new USCaseErrorResponse( 
 				HttpStatus.NOT_FOUND.value(),
@@ -24,7 +25,8 @@ public class USCaseRestExceptionHandler {
 	
 	// handling the rest exceptions
 	@ExceptionHandler
-	public ResponseEntity<USCaseErrorResponse> exceptionHandle(Exception exc){
+	public ResponseEntity<USCaseErrorResponse> exceptionHandle(
+			Exception exc){
 		
 		USCaseErrorResponse error = new USCaseErrorResponse( 
 				HttpStatus.BAD_REQUEST.value(),

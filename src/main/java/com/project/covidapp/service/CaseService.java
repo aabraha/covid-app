@@ -30,10 +30,7 @@ public class CaseService {
 	private ZonedDateTimeWriteConverter dateObj;
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
-	private MongoOperations mongoOperations;
-
-	@GetMapping("/cases")
+	
 	public List<USCase> getAllCases() {
 		List<USCase> lists = new ArrayList<>();
 		lists = usCaseRepository.findAll();
@@ -54,29 +51,56 @@ public class CaseService {
 		return theCase;
 	}
 
-	public void deleteCaseById(String id) {
-
-		usCaseRepository.deleteById(id);
-	}
-
 	public List<USCase> getCasesByDateModified(ZonedDateTime dateModified) {
 
-		return usCaseRepository.findByLastUpdated(dateObj.convert(dateModified));
+		List<USCase> lists = new ArrayList<>();
+		lists = usCaseRepository.findByLastUpdated(dateObj.convert(dateModified));
+		if(lists.size() == 0) {
+			throw new USCaseNotFoundException("There is no any record found on: " +
+					dateModified);
+		}
+		
+		return lists;
 	}
 
 	public List<USCase> getCasesByDateModifiedAfter(ZonedDateTime afterDate) {
 
-		return usCaseRepository.findByLastUpdatedGreaterThan(dateObj.convert(afterDate));
+		List<USCase> lists = new ArrayList<>();
+		lists = usCaseRepository.findByLastUpdatedGreaterThan(
+				dateObj.convert(afterDate));
+		if(lists.size() == 0) {
+			throw new USCaseNotFoundException("There is no any record found after: " +
+					afterDate);
+		}
+		
+		return lists; 
 	}
 
 	public List<USCase> getCasesByDateModifiedBefore(ZonedDateTime beforeDate) {
 
-		return usCaseRepository.findByLastUpdatedLessThan(dateObj.convert(beforeDate));
+		List<USCase> lists = new ArrayList<>();
+		lists =  usCaseRepository.findByLastUpdatedLessThan(
+				dateObj.convert(beforeDate));
+		if(lists.size() == 0) {
+			throw new USCaseNotFoundException("There is no any record found before: " +
+					beforeDate);
+		}
+		
+		return lists; 
 	}
 
-	public List<USCase> getCasesByDateModifiedBetween(ZonedDateTime from, ZonedDateTime to) {
+	public List<USCase> getCasesByDateModifiedBetween(ZonedDateTime from, 
+			ZonedDateTime to) {
 
-		return usCaseRepository.findByLastUpdatedBetween(dateObj.convert(from), dateObj.convert(to));
+		List<USCase> lists = new ArrayList<>();
+		lists =  usCaseRepository.findByLastUpdatedBetween(
+				dateObj.convert(from), dateObj.convert(to));
+		if(lists.size() == 0) {
+			throw new USCaseNotFoundException("There is no any record found between: " +
+					from + " and " + to);
+		}
+		
+		return lists; 
 	}
 
 	public List<USCase> getCasesByState(String state) {
@@ -93,8 +117,26 @@ public class CaseService {
 		operations.add(match);
 		operations.add(group);
 		Aggregation aggregation = Aggregation.newAggregation(operations);
-		List<USCase> results = mongoTemplate.aggregate(aggregation, USCase.class, USCase.class).getMappedResults();
+		List<USCase> results = mongoTemplate.aggregate(aggregation, 
+				USCase.class, USCase.class).getMappedResults();
+		
+		if(results.size() == 0) {
+			throw new USCaseNotFoundException("There is no state named : " + state);
+		}
 		
 		return results;
+	}
+	
+	public String deleteCaseById(String id) {
+
+		// First check availability of a case with that id
+		Optional<USCase> theCase = usCaseRepository.findById(id);
+		if(!theCase.isPresent()) {
+			throw new USCaseNotFoundException("There is no case with ID: " + id);
+		}
+		
+		usCaseRepository.deleteById(id);
+		
+		return "Case deleted with ID: " + id;
 	}
 }

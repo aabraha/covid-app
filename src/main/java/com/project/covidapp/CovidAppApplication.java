@@ -20,7 +20,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
-import com.project.covidapp.dto.ConsumedModel;
 
 @SpringBootApplication
 @EnableScheduling
@@ -32,7 +31,7 @@ public class CovidAppApplication {
 	}
 	
 	//RestTemplate Bean
-	// bypass the ssl validation
+	// Polished to bypass the SSL validation
 	@Bean
 	public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 	    TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
