@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.covidapp.dto.State;
 import com.project.covidapp.model.USCase;
 import com.project.covidapp.service.CaseService;
 
@@ -26,9 +27,9 @@ public class CaseController {
 		
 	// retrieve all cases
 	@GetMapping("/cases")
-	public List<USCase> getAllCases(){
+	public Page<USCase> getAllCases(Pageable pageable){
 		
-		return caseService.getAllCases();
+		return caseService.getAllCases(pageable);
 	}
 	
 	@GetMapping("/cases/{id}")

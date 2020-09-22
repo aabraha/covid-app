@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import com.project.covidapp.dto.State;
 import com.project.covidapp.model.USCase;
 import com.project.covidapp.repository.USCaseRepository;
 import com.project.covidapp.rest.USCaseNotFoundException;
@@ -31,14 +28,14 @@ public class CaseService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
-	public List<USCase> getAllCases() {
-		List<USCase> lists = new ArrayList<>();
-		lists = usCaseRepository.findAll();
-		if(lists.size() == 0) {
+	//working on
+	public Page<USCase> getAllCases(Pageable pageable){
+		Page<USCase> pages =  usCaseRepository.findAll(pageable);
+		if(pages.isEmpty()) {
 			throw new USCaseNotFoundException("There is no any record found");
 		}
 
-		return lists;
+		return pages;
 	}
 
 	public Optional<USCase> getCaseById(String id) {
