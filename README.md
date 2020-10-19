@@ -22,10 +22,11 @@ To provide a flexible data access with different search options. This will help 
 -   GET:http://localhost:8081/api/cases
 -   GET:http://localhost:8081/api/cases/{id}
 -   GET:http://localhost:8081/api/cases/search
-    -   by state name
-    -   by date updated
-    -   before and after date updated
-    -   between dates
+    -   by state name pass 'state' as query param
+    -   by date updated pass 'dateModified' as query param
+    -   before date updated pass 'beforeDate' as query param 
+    -   after date updated pass 'afterDate' as query param
+    -   between dates pass 'betweenDate' as query param
 -   DELETE:http://localhost:8081/api/cases/{id}
 -   http://localhost:8081/api/cases
 
