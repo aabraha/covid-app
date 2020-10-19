@@ -9,7 +9,7 @@ To provide a flexible data access with different search options. This will help 
 -  SpringBoot
 -   MongoDB
 -   Atlas Cloud
--   React
+-   
 
 ## Features
 -   Consume a secured API
